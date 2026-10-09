@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chattacappu</title>
+  <style>
+    :root {
+      --sky-1: #edfaff;
+      --sky-2: #cbeeff;
+      --sky-3: #76ccff;
+      --blue-1: #0c4ca4;
+      --blue-2: #1b7fe1;
+      --blue-3: #78d8ff;
+      --navy: #0d2343;
+      --text: #183d63;
+      --white: #ffffff;
+      --glass: rgba(255,255,255,0.18);
+      --glass-strong: rgba(255,255,255,0.55);
+      --shadow: rgba(15, 70, 130, 0.16);
+      --shadow-strong: rgba(8, 34, 58, 0.24);
+      --pink: #ff8dc7;
+      --pink-2: #ffbbdb;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 26%, #eefcff 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    img { display: block; width: 100%; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    .floating-hearts {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -18%;
+      font-size: 1.8rem;
+      opacity: 0.8;
+      color: rgba(44, 129, 255, 0.75);
+      filter: drop-shadow(0 0 12px rgba(126, 210, 255, 0.7));
+      animation: rise linear infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 0;
+      }
+      15% { opacity: 1; }
+      100% {
+        transform: translateY(-120vh) scale(1.6) rotate(25deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: min(1220px, 92vw);
+      margin: 0 auto;
+    }
+
+    header {
+      padding-top: 22px;
+      padding-bottom: 8px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 22px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 999px;
+      box-shadow: 0 18px 40px rgba(15, 70, 130, 0.07);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: 2px;
+      font-size: 1.35rem;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .nav a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: 0.25s ease;
+    }
+
+    .nav a:hover {
+      background: rgba(23, 118, 216, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 36px;
+      align-items: center;
+      min-height: 74vh;
+      padding: 16px 0 36px;
+    }
+
+    .eyebrow {
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3rem, 6vw, 6.2rem);
+      letter-spacing: -2px;
+      line-height: 0.92;
+      color: var(--navy);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2), var(--blue-3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      margin-top: 20px;
+      font-size: 1.08rem;
+      line-height: 1.9;
+      max-width: 620px;
+      color: #214b74;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 28px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 18px 35px rgba(19, 108, 208, 0.22);
+    }
+
+    .btn:hover { transform: translateY(-3px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      color: var(--white);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(13, 79, 168, 0.12);
+      color: var(--navy);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .orb {
+      position: absolute;
+      width: min(520px, 78vw);
+      height: min(520px, 78vw);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(154,223,255,0.78), rgba(26,110,202,0.75));
+      box-shadow: inset 0 26px 60px rgba(255,255,255,0.42), 0 30px 80px rgba(17, 85, 185, 0.18);
+      z-index: 1;
+    }
+
+    .photo-card {
+      position: relative;
+      z-index: 2;
+      width: min(430px, 80%);
+      padding: 12px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 28px 70px rgba(14, 62, 116, 0.17);
+      transform: rotate(-2deg);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 22px;
+      border: 3px solid rgba(255,255,255,0.7);
+    }
+
+    .badge {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      z-index: 3;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(13, 79, 168, 0.8);
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: 1px;
+      box-shadow: 0 12px 20px rgba(13, 74, 158, 0.25);
+    }
+
+    section {
+      padding: 34px 0 18px;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      color: var(--navy);
+    }
+
+    .profiles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .profile-card {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 24px 55px rgba(15, 59, 112, 0.12);
+      transition: 0.3s ease;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 60px rgba(15, 59, 112, 0.18);
+    }
+
+    .profile-card img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-body {
+      padding: 20px 20px 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(170,228,255,0.2));
+    }
+
+    .profile-body h3 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      color: var(--navy);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      background: rgba(19, 117, 217, 0.08);
+      color: var(--navy);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .profile-body p {
+      margin: 0;
+      line-height: 1.8;
+      font-size: 1rem;
+      color: #1d3f63;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .gallery-item {
+      position: relative;
+      min-height: 330px;
+      overflow: hidden;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(20, 65, 111, 0.12);
+      background: rgba(255,255,255,0.22);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      min-height: 330px;
+      object-fit: cover;
+      transition: 0.5s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .caption {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .story {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: 30px;
+      padding: 30px 28px;
+      box-shadow: 0 22px 55px rgba(14, 62, 116, 0.1);
+    }
+
+    .story p {
+      margin: 0;
+      text-align: center;
+      line-height: 1.9;
+      font-size: 1.12rem;
+      color: var(--navy);
+    }
+
+    footer {
+      padding: 26px 0 52px;
+      text-align: center;
+      color: var(--navy);
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+      .profiles { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .gallery { grid-template-columns: 1fr; }
+      .cta-row { flex-direction: column; }
+      .btn { width: 100%; }
+      .topbar { border-radius: 18px; }
+      .photo-card img { height: 420px; }
+      .orb { width: min(390px, 82vw); height: min(390px, 82vw); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-hearts" aria-hidden="true">
+    <div class="heart" style="left: 10%; animation-duration: 11s; animation-delay: 0s;">❤</div>
+    <div class="heart" style="left: 22%; animation-duration: 12s; animation-delay: 1s;">❤</div>
+    <div class="heart" style="left: 35%; animation-duration: 14s; animation-delay: 1.6s;">❤</div>
+    <div class="heart" style="left: 50%; animation-duration: 13s; animation-delay: 2.6s;">❤</div>
+    <div class="heart" style="left: 65%; animation-duration: 15s; animation-delay: 0.8s;">❤</div>
+    <div class="heart" style="left: 79%; animation-duration: 12.5s; animation-delay: 2s;">❤</div>
+    <div class="heart" style="left: 90%; animation-duration: 14.5s; animation-delay: 3s;">❤</div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="topbar">
+        <div class="brand">CHATTACAPPU</div>
+        <nav class="nav">
+          <a href="#home">Home</a>
+          <a href="#cavalli">Cavalli</a>
+          <a href="#galleria">Galleria</a>
+          <a href="#story">La storia</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Scuderia incantata</div>
+          <h1>Il cuore di <span class="gradient-text">Chattanooga</span> e <span class="gradient-text">Cappuccino</span></h1>
+          <p class="lead">
+            Due personalità molto diverse ma perfettamente complementari: Chattanooga porta calma,
+            sicurezza e tranquillità; Cappuccino porta energia, curiosità e vitalità. Insieme formano
+            un duo speciale, bello, unico e pieno di vita.
+          </p>
+          <div class="cta-row">
+            <a href="#cavalli" class="btn btn-primary">Scopri i cavalli</a>
+            <a href="#galleria" class="btn btn-secondary">Vedi la galleria</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="orb"></div>
+          <div class="badge">💙 amore in movimento</div>
+          <div class="photo-card">
+            <img src="images/chattanooga-hero.jpg" alt="Chattanooga e Cappuccino in prato" />
+          </div>
+        </div>
+      </section>
+
+      <section id="cavalli">
+        <div class="section-heading">
+          <h2>I protagonisti</h2>
+        </div>
+
+        <div class="profiles">
+          <article class="profile-card">
+            <img src="images/chattanooga-1.jpg" alt="Chattanooga" />
+            <div class="profile-body">
+              <h3>Chattanooga</h3>
+              <div class="tags">
+                <span class="tag">Tranquillo</span>
+                <span class="tag">Calmo</span>
+                <span class="tag">Vecchio</span>
+              </div>
+              <p>
+                Chattanooga è il cavallo della serenità: forte, rasserenante e gentile, con quel suo modo
+                di trasmettere calma e sicurezza. Un compagno elegante e stabile nel suo carattere.
+              </p>
+            </div>
+          </article>
+
+          <article class="profile-card">
+            <img src="images/cappuccino-1.jpg" alt="Cappuccino" />
+            <div class="profile-body">
+              <h3>Cappuccino</h3>
+              <div class="tags">
+                <span class="tag">Giovane</span>
+                <span class="tag">Agitato</span>
+                <span class="tag">Più chiaro</span>
+              </div>
+              <p>
+                Cappuccino è energia e vitalità. Più vivace, curioso e brillante, porta sempre movimento,
+                gioia e una luce speciale che lo rende irresistibile e pieno di presenza.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="galleria">
+        <div class="section-heading">
+          <h2>Galleria</h2>
+        </div>
+
+        <div class="gallery">
+          <div class="gallery-item">
+            <img src="images/chattanooga-2.jpg" alt="Chattanooga di profilo" />
+            <div class="caption">Chattanooga</div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="images/cappuccino-2.jpg" alt="Cappuccino di profilo" />
+            <div class="caption">Cappuccino</div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="images/chattanooga-cappuccino.jpg" alt="I due cavalli insieme" />
+            <div class="caption">Insieme</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="story">
+        <div class="story">
+          <p>
+            “Chattacappu” non è solo un nome: è un piccolo mondo fatto di energia, calma, amore e
+            meraviglia. Chattanooga e Cappuccino, con i loro caratteri così diversi, sanno creare una
+            magia unica: uno porta serenità, l’altro luce, e insieme diventano qualcosa di incantevole.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © 2026 Chattacappu • creato con cura e amore 💙
+    </footer>
+  </div>
+</body>
+</html>
